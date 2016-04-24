@@ -30,3 +30,8 @@
 
 # Debug files
 *.dSYM/
+
+# alex mid-level files
+*.bc
+*.out
+*.S
