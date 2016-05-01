@@ -7,10 +7,16 @@ llc =           File.join llvm_bin_path, 'llc'
 clang =         'clang'
 
 
-clangflags =        '-c -emit-llvm -fno-builtin -g -m32 -mno-sse -fno-stack-protector -O2'
+clangflags =        '-c -emit-llvm -fno-builtin -m32 -mno-sse -fno-stack-protector -O0'
 llcflags =      '-march=alex -filetype=obj'
+llcasmflags =   '-march=alex -filetype=asm'
 
 suffix = ['c', 'cpp']
+
+COMPILE_VERBOSE = false
+def log(str)
+  puts str if COMPILE_VERBOSE
+end
 
 # option parser start
 options = { inc_path: [], src_dir: File.expand_path('./src'), obj_dir: File.expand_path('./obj'), output_file: File.expand_path('./a.out') }
@@ -39,7 +45,7 @@ end
 
 # clang compile c to llvm ir
 cmd = "find #{options[:src_dir]} | grep -E \"\\.(#{suffix.join '|'})$\""
-puts cmd
+log cmd
 sources = `#{cmd}`.split "\n"
 llvm_objs = []
 sources.each do |source|
@@ -48,13 +54,17 @@ sources.each do |source|
   llvm_obj_file = File.join(options[:obj_dir],rel_path+'.bc')
   llvm_objs << llvm_obj_file
   cmd = "mkdir -p #{llvm_obj_file.split('/')[0...-1].join('/')}"
-  puts cmd
+  log cmd
   Kernel.system cmd
   cmd = "clang #{clangflags} #{include_params} #{source} -o #{llvm_obj_file}"
-  puts cmd
+  log cmd
   Kernel.system cmd
 
   cmd = "#{llc} #{llcflags} #{llvm_obj_file} -o #{llvm_obj_file}.o"
-  puts cmd
+  log cmd
+  Kernel.system cmd
+  
+  cmd = "#{llc} #{llcasmflags} #{llvm_obj_file} -o #{llvm_obj_file}.ll"
+  log cmd
   Kernel.system cmd
 end
