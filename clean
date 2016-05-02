@@ -1,5 +1,5 @@
 #!/bin/bash
-if [ -f a.out* ]; then
+if ls | grep "a.out" > /dev/null ; then
   rm a.out*
 fi
 if [ -d obj ]; then

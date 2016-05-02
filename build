@@ -2,6 +2,8 @@
 require 'optparse'
 require 'pathname'
 
+`./clean`
+
 llvm_bin_path = '/home/alexwang/.CLion2016.1/system/cmake/generated/llvm-v9-master-32433d16/32433d16/Debug/bin'
 llc =           File.join llvm_bin_path, 'llc'
 lld =           File.join llvm_bin_path, 'lld'
