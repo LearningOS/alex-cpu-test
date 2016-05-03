@@ -19,22 +19,16 @@ asm("addi $sp, $t1, 0");
 // call main
 asm("lih $t1, %hi(main)");
 asm("addiu  $t1, $t1, %lo(main)");
-asm("jr  $t1");
+asm("call  $t1");
 
-// print hello
+// print 'bye'
 asm("li $t0, 0");
-asm("li $t1, 72");
+asm("li $t1, 0x42");
 asm("bout $t0, $t1");
-asm("li $t1, 101");
+asm("li $t1, 0x79");
 asm("bout $t0, $t1");
-asm("li $t1, 108");
+asm("li $t1, 0x65");
 asm("bout $t0, $t1");
-asm("li $t1, 108");
+asm("li $t1, 0x0a");
 asm("bout $t0, $t1");
-asm("li $t1, 111");
-asm("bout $t0, $t1");
-asm("li $t1, 10");
-asm("bout $t0, $t1");
-
-
 asm("halt");

@@ -2,8 +2,6 @@
 require 'optparse'
 require 'pathname'
 
-`./clean`
-
 llvm_bin_path = '/home/alexwang/.CLion2016.1/system/cmake/generated/llvm-v9-master-32433d16/32433d16/Debug/bin'
 llc =           File.join llvm_bin_path, 'llc'
 lld =           File.join llvm_bin_path, 'lld'
@@ -15,6 +13,7 @@ clang =         'clang'
 clangflags =        '-c -emit-llvm -fno-builtin -m32 -mno-sse -fno-stack-protector'
 lldflags =      '-flavor gnu'
 llcflags =      '-march=alex -filetype=obj'
+llcasmflags =   '-march=alex -filetype=asm'
 llcasmflags =   '-march=alex -filetype=asm'
 
 suffix = ['c', 'cpp']
@@ -61,10 +60,14 @@ sources.each do |source|
   cmd = "mkdir -p #{llvm_obj_file.split('/')[0...-1].join('/')}"
   puts cmd
   Kernel.system cmd
+
   cmd = "clang #{clangflags} #{include_params} #{source} -o #{llvm_obj_file}"
   puts cmd
   Kernel.system cmd
-  puts
+
+  cmd = "#{llc} #{llcasmflags} #{llvm_obj_file} -o #{llvm_obj_file}.ll"
+  puts cmd
+  Kernel.system cmd
 end
 
 `mkdir -p #{options[:output_file].split('/')[0...-1].join('/')}`

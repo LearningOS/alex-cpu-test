@@ -1,18 +1,5 @@
-extern int test_switch(int a, int *ary);
-int intv = 222;
-int intary[100] = { 0 };
-
-void putc(int c) {
-  int port = 1;
-  asm volatile (
-    "bout %0, %1\n\t"
-    :
-    : "r" (port), "r" (c)
-  );
-}
-
+#include "libs/stdio.h"
 int main() {
-  putc('H');putc('e');putc('l');putc('l');putc('o');putc('!');
-  //intv = test_switch(123, intary);
+  cprintf("Hello World! 0x%08x\n", 0xdeadbeef);
   return 0;
 }
