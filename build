@@ -62,6 +62,7 @@ llc =           File.join llvm_bin_path, 'llc'
 lld =           File.join llvm_bin_path, 'lld'
 llvm_objdump =  File.join llvm_bin_path, 'llvm-objdump'
 llvm_link =     File.join llvm_bin_path, 'llvm-link'
+assembler =     File.join llvm_bin_path, 'llvm-mc'
 clang =         'clang'
 mkdir =         'mkdir -p'
 
@@ -70,9 +71,9 @@ lldflags =      '-flavor gnu'
 llcflags =      '-march=alex -filetype=obj'
 llcasmflags =   '-march=alex -filetype=asm'
 llcasmflags =   '-march=alex -filetype=asm'
+asm_flags =     '-arch=alex -assemble -filetype=obj'
 
-suffix = ['c', 'cpp']
-
+suffix = %w'c cpp s'
 # initialize include dirs
 includes = options[:inc_path] + (`find #{options[:src_dir]} -type d`.split "\n")
 include_params = includes.reduce('') do |sum, inc|
@@ -83,31 +84,40 @@ end
 files = `find #{options[:src_dir]} | grep -E \"\\.(#{suffix.join '|'})$\"`
 sources = files.split "\n"
 llvm_objs = []
+alex_objs = []
 sources.each do |source|
   rel_path = Pathname.new(File.expand_path source).relative_path_from(Pathname.new options[:src_dir]).to_s
   file_name = rel_path.split('/').last
+  suffix = rel_path.split('.').last.downcase
+
   llvm_obj_file = File.join(options[:obj_dir],rel_path+'.bc')
+  alex_obj_file = llvm_obj_file + '.o'
   llvm_objs << llvm_obj_file
+  alex_objs << alex_obj_file
   cmd "#{mkdir} #{llvm_obj_file.split('/')[0...-1].join('/')}"
 
-  cmd "#{clang} #{clangflags} #{include_params} #{source} -o #{llvm_obj_file}"
-
-  cmd "#{llc} #{llcasmflags} #{llvm_obj_file} -o #{llvm_obj_file}.ll"
+  if %w'c cpp'.include?(suffix)
+    cmd "#{clang} #{clangflags} #{include_params} #{source} -o #{llvm_obj_file}"
+    cmd "#{llc} #{llcasmflags} #{llvm_obj_file} -o #{llvm_obj_file}.ll"
+    cmd "#{llc} #{llcflags} #{llvm_obj_file} -o #{alex_obj_file}"
+  else
+    cmd "#{assembler} #{asm_flags} #{source} -o #{alex_obj_file}"
+  end
 end
 
 cmd "#{mkdir} #{options[:output_file].split('/')[0...-1].join('/')}"
-llvm_one_big_obj = options[:output_file] + '.bc'
-my_obj = options[:output_file] + '.o'
+#llvm_one_big_obj = options[:output_file] + '.bc'
+#my_obj = options[:output_file] + '.o'
 
 # link to one llvm ir file
-cmd "#{llvm_link} -o #{llvm_one_big_obj} #{llvm_objs.join ' '}"
+#cmd "#{llvm_link} -o #{llvm_one_big_obj} #{llvm_objs.join ' '}"
 
-# compile llvm ir to cpu0 obj file
-cmd "#{llc} #{llcflags} #{llvm_one_big_obj} -o #{my_obj}" 
-cmd "#{llc} #{llcasmflags} #{llvm_one_big_obj} -o #{my_obj}.S"
+# compile llvm ir to alex obj file
+#cmd "#{llc} #{llcflags} #{llvm_one_big_obj} -o #{my_obj}" 
+#cmd "#{llc} #{llcasmflags} #{llvm_one_big_obj} -o #{my_obj}.S"
 
 # link
-cmd "#{lld} #{lldflags} #{my_obj} -o #{options[:output_file]}"
+cmd "#{lld} #{lldflags} #{alex_objs.join(' ')} -o #{options[:output_file]}"
 
 # run simulator
 system "#{nodejs} #{alex_simulator} #{options[:output_file]}"
