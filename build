@@ -66,7 +66,7 @@ assembler =     File.join llvm_bin_path, 'llvm-mc'
 clang =         'clang'
 mkdir =         'mkdir -p'
 
-clangflags =    '-c -emit-llvm -fno-builtin -m32 -mno-sse -fno-stack-protector'
+clangflags =    '-c -emit-llvm -g -fno-builtin -m32 -mno-sse -fno-stack-protector'
 lldflags =      '-flavor gnu'
 llcflags =      '-march=alex -filetype=obj'
 llcasmflags =   '-march=alex -filetype=asm'
@@ -119,5 +119,6 @@ cmd "#{mkdir} #{options[:output_file].split('/')[0...-1].join('/')}"
 # link
 cmd "#{lld} #{lldflags} #{alex_objs.join(' ')} -o #{options[:output_file]}"
 
+cmd "./dwarf2json #{options[:output_file]} #{options[:output_file]}.json"
 # run simulator
-system "#{nodejs} #{alex_simulator} #{options[:output_file]}"
+#system "#{nodejs} #{alex_simulator} #{options[:output_file]}"
