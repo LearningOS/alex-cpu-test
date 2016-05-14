@@ -9,6 +9,14 @@
 # current project:
 # git clone https://github.com/a1exwang/alex-cpu-test.git -b master alex-machine-tests
 
+# install dependencies
+sudo apt-get install clang-3.7
+sudo update-alternative --install /usr/bin/clang clang /usr/bin/clang-3.7 1000
+sudo apt-get install ruby git npm
+# install latest nodejs
+sudo npm install n
+sudo n latest
+
 cd ..
 
 #git clone https://github.com/a1exwang/alex-machine.git -b alex-test alex-machine
