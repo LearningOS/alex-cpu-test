@@ -10,16 +10,16 @@ LOGIO = STDOUT
 
 def cmd(s)
   LOGIO.puts s if @verbose >= VL_VERBOSE
-  result = `#{s}` 
+  result = `#{s}`
   LOGIO.puts result if @verbose >= VL_DEBUG
 end
 
 # option parser start
-options = { 
-  inc_path: [], 
-  src_dir: File.expand_path('./src'), 
-  obj_dir: File.expand_path('./obj'), 
-  output_file: File.expand_path('./a.out') 
+options = {
+  inc_path: [],
+  src_dir: File.expand_path('./src'),
+  obj_dir: File.expand_path('./obj'),
+  output_file: File.expand_path('./a.out')
 }
 option_parser = OptionParser.new do |opts|
   opts.banner = './build -s src_dir -b obj_dir -o output_file'
@@ -43,7 +43,7 @@ option_parser = OptionParser.new do |opts|
   opts.on('-I INC_PATH', 'include path') do |s|
     options[:inc_path] << File.expand_path(s)
   end
-  
+
   opts.on('-l LLVM_PATH', '--llvm LLVM_PATH', 'llvm path') do |l|
     options[:llvm_path] = File.expand_path l
   end
@@ -66,7 +66,7 @@ assembler =     File.join llvm_bin_path, 'llvm-mc'
 clang =         'clang'
 mkdir =         'mkdir -p'
 
-clangflags =    '-c -emit-llvm -g -fno-builtin -m32 -mno-sse -fno-stack-protector'
+clangflags =    '-c -emit-llvm -nostdinc -g -fno-builtin -m32 -mno-sse -fno-stack-protector'
 lldflags =      '-flavor gnu'
 llcflags =      '-march=alex -filetype=obj'
 llcasmflags =   '-march=alex -filetype=asm'
@@ -113,7 +113,7 @@ cmd "#{mkdir} #{options[:output_file].split('/')[0...-1].join('/')}"
 #cmd "#{llvm_link} -o #{llvm_one_big_obj} #{llvm_objs.join ' '}"
 
 # compile llvm ir to alex obj file
-#cmd "#{llc} #{llcflags} #{llvm_one_big_obj} -o #{my_obj}" 
+#cmd "#{llc} #{llcflags} #{llvm_one_big_obj} -o #{my_obj}"
 #cmd "#{llc} #{llcasmflags} #{llvm_one_big_obj} -o #{my_obj}.S"
 
 # link

@@ -1,5 +1,5 @@
-#include <unistd.h>
-#include <stdarg.h>
+#include "defs.h"
+#include "stdarg.h"
 
 int cprintf(const char *fmt, ...);
 int vsnprintf(char *str, size_t size, const char *fmt, va_list ap);

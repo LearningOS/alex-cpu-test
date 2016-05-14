@@ -7,7 +7,7 @@ llc =           File.join llvm_bin_path, 'llc'
 clang =         'clang'
 
 
-clangflags =        '-c -emit-llvm -fno-builtin -m32 -mno-sse -fno-stack-protector -O0'
+clangflags =        '-c -emit-llvm -nostdinc -fno-builtin -m32 -mno-sse -fno-stack-protector -O0'
 llcflags =      '-march=alex -filetype=obj'
 llcasmflags =   '-march=alex -filetype=asm'
 
@@ -63,7 +63,7 @@ sources.each do |source|
   cmd = "#{llc} #{llcflags} #{llvm_obj_file} -o #{llvm_obj_file}.o"
   log cmd
   Kernel.system cmd
-  
+
   cmd = "#{llc} #{llcasmflags} #{llvm_obj_file} -o #{llvm_obj_file}.ll"
   log cmd
   Kernel.system cmd

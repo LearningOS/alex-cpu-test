@@ -1,9 +1,7 @@
 
 #include <stdio.h>
-#include <unistd.h>
 #include <stdarg.h>
 
-typedef unsigned int* uintptr_t;
 #define NO_FD 0
 
  size_t strnlen(const char *s, size_t maxlen) {
