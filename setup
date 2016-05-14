@@ -1,0 +1,34 @@
+#!/bin/bash
+# requirements:
+#   clang 3.7+
+#   objdump, readelf
+#   ruby
+#   git
+#   nodejs 5.0+
+
+# current project:
+# git clone https://github.com/a1exwang/alex-cpu-test.git -b master alex-machine-tests
+
+cd ..
+
+#git clone https://github.com/a1exwang/alex-machine.git -b alex-test alex-machine
+#git clone https://github.com/a1exwang/llvm.git -b alex-cpu llvm
+#git clone https://github.com/a1exwang/lld.git -b alex-cpu llvm/tools/lld
+
+mkdir -p llvm-build
+cd llvm-build
+cmake -DCMAKE_BUILD_TYPE=Release ../llvm
+make llc -j24
+make lld -j24
+make llvm-mc -j24
+make llvm-objdump -j24
+cd ..
+
+cd alex-machine
+npm install
+cd ..
+
+cd alex-machine-tests
+./build -l ../llvm-build/bin
+
+node ../alex-machine/simulator/sim.js -p a.out
