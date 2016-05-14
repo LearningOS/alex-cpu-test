@@ -1,0 +1,18 @@
+#!/bin/bash
+
+
+sudo apt-get install -y git npm ruby clang-3.8
+sudo npm install -g n
+sudo n lastest
+sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-3.8 400
+
+git clone https://github.com/a1exwang/alex-machine.git -b alex-test alex-machine
+git clone https://github.com/a1exwang/llvm.git -b alex-cpu llvm
+
+
+cd ../alex-machine
+npm install
+cd ../alex-cpu-test
+
+./build -l ../bin
+node ../alex-machine/simulator/sim.js -p a.out

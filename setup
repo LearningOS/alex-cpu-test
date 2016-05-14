@@ -14,7 +14,7 @@ sudo apt-get install clang-3.7
 sudo update-alternative --install /usr/bin/clang clang /usr/bin/clang-3.7 1000
 sudo apt-get install ruby git npm
 # install latest nodejs
-sudo npm install n
+sudo npm install -g n
 sudo n latest
 
 cd ..
