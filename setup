@@ -9,6 +9,12 @@
 # current project:
 # git clone https://github.com/a1exwang/alex-cpu-test.git -b master alex-machine-tests
 
+if [ $# -eq 1]; then
+  FROM_SCRATCH=1
+else
+  FROM_SCRATCH=0
+fi
+
 # install dependencies
 sudo apt-get install clang-3.7
 sudo update-alternative --install /usr/bin/clang clang /usr/bin/clang-3.7 1000
@@ -19,9 +25,11 @@ sudo n latest
 
 cd ..
 
-#git clone https://github.com/a1exwang/alex-machine.git -b alex-test alex-machine
-#git clone https://github.com/a1exwang/llvm.git -b alex-cpu llvm
-#git clone https://github.com/a1exwang/lld.git -b alex-cpu llvm/tools/lld
+if [ $FROM_SCRATCH -eq 1]; then 
+  git clone https://github.com/a1exwang/alex-machine.git -b alex-test alex-machine
+  git clone https://github.com/a1exwang/llvm.git -b alex-cpu llvm
+  git clone https://github.com/a1exwang/lld.git -b alex-cpu llvm/tools/lld
+fi
 
 mkdir -p llvm-build
 cd llvm-build

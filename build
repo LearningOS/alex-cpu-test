@@ -48,8 +48,8 @@ option_parser = OptionParser.new do |opts|
     options[:llvm_path] = File.expand_path l
   end
 
-  opts.on('-V VERBOSE_LEVEL', '--verbose VERBOSE_LEVEL', 'set verbose level') do |v|
-    @verbose = v.to_i
+  opts.on('-v', '--verbose', 'set verbose level') do |v|
+    @verbose = VL_DEBUG
   end
 
 end.parse!
